@@ -13,6 +13,9 @@ class ImageProcessing:
     def setImage(self,image):
         self._image = image
     
+    def rotate(self):
+        return cv2.rotate(self._image,cv2.ROTATE_90_CLOCKWISE)
+    
     def brightness(self,value):
         self._image = self._image + value
         return self._image
@@ -301,6 +304,9 @@ class ImageProcessing:
     #     return final_image
     
     def sobel(self):
+        scale = 1
+        delta = 0
+        ddepth = cv2.CV_16S
         
         if len(self._image.shape) == 3:
             original_image = self.grayscale()
@@ -308,10 +314,16 @@ class ImageProcessing:
             original_image = self._image
             
         final_image = np.copy(original_image)    
-        sobel_x = cv2.Sobel(final_image,cv2.CV_8U,1,0,ksize=3)
-        sobel_y = cv2.Sobel(final_image,cv2.CV_8U,0,1,ksize=3)
 
-        return sobel_x + sobel_y
+        grad_x = cv2.Sobel(final_image, ddepth, 1, 0, ksize=3, scale=scale, delta=delta, borderType=cv2.BORDER_DEFAULT)
+        grad_y = cv2.Sobel(final_image, ddepth, 0, 1, ksize=3, scale=scale, delta=delta, borderType=cv2.BORDER_DEFAULT)
+        
+        abs_grad_x = cv2.convertScaleAbs(grad_x)
+        abs_grad_y = cv2.convertScaleAbs(grad_y)
+        
+        grad = cv2.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0)
+        
+        return grad
     
     def laplacian(self):            
         final_image = np.copy(self._image)

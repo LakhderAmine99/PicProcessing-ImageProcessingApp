@@ -402,14 +402,14 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.KirschBtn)
 
-        self.RobinsonBtn = QPushButton(self.scrollAreaWidgetContents)
-        self.RobinsonBtn.setObjectName(u"RobinsonBtn")
-        self.RobinsonBtn.setStyleSheet(u"QPushButton:hover{\n"
+        self.RobertsBtn = QPushButton(self.scrollAreaWidgetContents)
+        self.RobertsBtn.setObjectName(u"RobertsBtn")
+        self.RobertsBtn.setStyleSheet(u"QPushButton:hover{\n"
 "color:rgb(76, 255, 0);\n"
 "background-color:rgba(49, 255, 3, 40)\n"
 "}")
 
-        self.verticalLayout.addWidget(self.RobinsonBtn)
+        self.verticalLayout.addWidget(self.RobertsBtn)
 
         self.LaplacianBtn = QPushButton(self.scrollAreaWidgetContents)
         self.LaplacianBtn.setObjectName(u"LaplacianBtn")
@@ -463,6 +463,26 @@ class Ui_MainWindow(object):
 "}")
 
         self.verticalLayout.addWidget(self.RegionGrowingBtn)
+        
+        self.RegionPartitionBtn = QPushButton(self.scrollAreaWidgetContents)
+        self.RegionPartitionBtn.setObjectName(u"RegionPartitionBtn")
+        self.RegionPartitionBtn.setCursor(QCursor(Qt.PointingHandCursor))
+        self.RegionPartitionBtn.setStyleSheet(u"QPushButton:hover{\n"
+"color:rgb(76, 90, 255);\n"
+"background-color:rgba(49, 49, 255, 40)\n"
+"}")
+
+        self.verticalLayout.addWidget(self.RegionPartitionBtn)
+        
+        self.KMeansBtn = QPushButton(self.scrollAreaWidgetContents)
+        self.KMeansBtn.setObjectName(u"KMeansBtn")
+        self.KMeansBtn.setCursor(QCursor(Qt.PointingHandCursor))
+        self.KMeansBtn.setStyleSheet(u"QPushButton:hover{\n"
+"color:rgb(76, 90, 255);\n"
+"background-color:rgba(49, 49, 255, 40)\n"
+"}")
+
+        self.verticalLayout.addWidget(self.KMeansBtn)
 
         self.FiltersScrollArea.setWidget(self.scrollAreaWidgetContents)
         self.AdjustArea = QFrame(self.centralwidget)
@@ -504,9 +524,9 @@ class Ui_MainWindow(object):
 "	background-color: rgb(0, 0, 0);\n"
 "}")
         icon1 = QIcon()
-        icon1.addFile(u"D:/designs-web/z14.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon1.addFile(u"D:/designs-web/z3.png", QSize(), QIcon.Normal, QIcon.Off)
         self.RotateBtn.setIcon(icon1)
-        self.RotateBtn.setIconSize(QSize(30, 32))
+        self.RotateBtn.setIconSize(QSize(34, 32))
         self.RotateBtn.setCheckable(False)
         self.RotateBtn.setAutoDefault(False)
         self.RotateBtn.setFlat(True)
@@ -943,13 +963,15 @@ class Ui_MainWindow(object):
         self.PrewittBtn.setText(QCoreApplication.translate("MainWindow", u"Prewitt", None))
         self.CannyBtn.setText(QCoreApplication.translate("MainWindow", u"Canny", None))
         self.KirschBtn.setText(QCoreApplication.translate("MainWindow", u"Kirsch", None))
-        self.RobinsonBtn.setText(QCoreApplication.translate("MainWindow", u"Robinson", None))
+        self.RobertsBtn.setText(QCoreApplication.translate("MainWindow", u"Roberts", None))
         self.LaplacianBtn.setText(QCoreApplication.translate("MainWindow", u"Laplacian", None))
         self.SiftBtn.setText(QCoreApplication.translate("MainWindow", u"Sift", None))
         self.HarrisBtn.setText(QCoreApplication.translate("MainWindow", u"Harris", None))
         self.HoughBtn.setText(QCoreApplication.translate("MainWindow", u"hough", None))
         self.labelColour_7.setText(QCoreApplication.translate("MainWindow", u"Segmentation", None))
         self.RegionGrowingBtn.setText(QCoreApplication.translate("MainWindow", u"region growing", None))
+        self.RegionPartitionBtn.setText(QCoreApplication.translate("MainWindow", u"region partition", None))
+        self.KMeansBtn.setText(QCoreApplication.translate("MainWindow", u"K-means clustering", None))
         self.Image_copy.setText("")
         self.RotateBtn.setText("")
         self.ZoomInBtn.setText("")

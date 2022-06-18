@@ -11,6 +11,9 @@ class PicProcessingApp(object):
         self.image = image
         self.imageProcessing.setImage(image)
     
+    def rotate(self):
+        return self.imageProcessing.rotate()
+    
     def grayscale(self):
         return self.imageProcessing.grayscale()
         

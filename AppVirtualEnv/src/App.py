@@ -66,6 +66,13 @@ class MainWindow(QMainWindow):
         self.ui.ApplyFiltersBtn.clicked.connect(self.setupApplyFiltersMenuToggleTool)
         self.ui.ResetChangesBtn.clicked.connect(self.resetChanges)
         
+        self.ui.RotateBtn.clicked.connect(self.setupRotateTool)
+        self.ui.ZoomInBtn.clicked.connect(self.setupZoomInTool)
+        self.ui.ZoomOutBtn.clicked.connect(self.setupZoomOutTool)
+        self.ui.FlipBtn.clicked.connect(self.setupFlipTool)
+        self.ui.CropBtn.clicked.connect(self.setupCropTool)
+        self.ui.ViewSwitchedBtn.clicked.connect(self.setupSwitchViewTool)
+        
         self.ui.FiltersBtn.clicked.connect(self.setupFiltersToggleTool)
         self.ui.SwitchViewBtn.clicked.connect(self.setupSwitchViewTool)
         
@@ -91,11 +98,14 @@ class MainWindow(QMainWindow):
         
         self.ui.GradiantBtn.clicked.connect(self.setupGradiantEdgeDetectionTool)
         self.ui.LaplacianBtn.clicked.connect(self.setupLaplacianEdgeDetectionTool)
-        self.ui.RobinsonBtn.clicked.connect(self.setupRobertsEdgeDetectionTool)
+        self.ui.RobertsBtn.clicked.connect(self.setupRobertsEdgeDetectionTool)
         self.ui.SobelBtn.clicked.connect(self.setupSobelEdgeDetectionTool)
         self.ui.PrewittBtn.clicked.connect(self.setupPrewittEdgeDetectionTool)
         self.ui.CannyBtn.clicked.connect(self.setupCannyEdgeDetectionTool)
         self.ui.KirschBtn.clicked.connect(self.setupKirschEdgeDetectionTool)
+        self.ui.RegionGrowingBtn.clicked.connect(self.setupRegionGrowingSegmentationTool)
+        self.ui.RegionPartitionBtn.clicked.connect(self.setupRegionPartitioningSegmentationTool)
+        self.ui.KMeansBtn.clicked.connect(self.setupKMeansSegmentationTool)
     
     def constructFrameToolWidget(self,objectname):
         frame = QFrame()
@@ -171,6 +181,20 @@ class MainWindow(QMainWindow):
     
     ## processing callers
     
+    def rotateHandler(self):
+        self.imageCopy = np.copy(self.image)
+        self.imageCopy = self.picProcessingApp.rotate()
+        self.setPicture(self.imageCopy)
+    
+    def flipHandler(self):
+        return
+    
+    def zoomInHandler(self):
+        return
+    
+    def zoomOutHandler(self):
+        return
+        
     def brightnessHandler(self,value):
         self.imageCopy = np.copy(self.image)
         
@@ -330,6 +354,18 @@ class MainWindow(QMainWindow):
     def snakesHandler(self):
         return 
     
+    def watershedHandler(self):
+        return
+    
+    def regionGrowingHandler(self):
+        return
+    
+    def regionPartitioningHandler(self):
+        return
+    
+    def kmeansHandler(self):
+        return
+    
     ## setup tools
     
     def setupAdjustImageMenuToggleTool(self):
@@ -405,6 +441,26 @@ class MainWindow(QMainWindow):
             self._isFiltersMenuOpen = False
             self.noEffects()
         
+        return
+    
+    def setupRotateTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+            
+        self.rotateHandler()
+        
+        return
+    
+    def setupZoomInTool(self):
+        return
+    
+    def setupZoomOutTool(self):
+        return
+    
+    def setupFlipTool(self):
+        return
+    
+    def setupCropTool(self):
         return
     
     def setupBrightnessTool(self):
@@ -605,6 +661,18 @@ class MainWindow(QMainWindow):
         return
     
     def setupHarrisPOIDetectionTool(self):
+        return
+    
+    def setupRegionGrowingSegmentationTool(self):
+        return
+    
+    def setupWatershedSegmentationTool(self):
+        return
+    
+    def setupRegionPartitioningSegmentationTool(self):
+        return
+    
+    def setupKMeansSegmentationTool(self):
         return
     
 if __name__ == "__main__":
