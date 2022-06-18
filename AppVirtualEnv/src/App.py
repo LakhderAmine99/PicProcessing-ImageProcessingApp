@@ -93,6 +93,8 @@ class MainWindow(QMainWindow):
         self.ui.LaplacianBtn.clicked.connect(self.setupLaplacianEdgeDetectionTool)
         self.ui.RobinsonBtn.clicked.connect(self.setupRobertsEdgeDetectionTool)
         self.ui.SobelBtn.clicked.connect(self.setupSobelEdgeDetectionTool)
+        self.ui.PrewittBtn.clicked.connect(self.setupPrewittEdgeDetectionTool)
+        self.ui.CannyBtn.clicked.connect(self.setupCannyEdgeDetectionTool)
         self.ui.KirschBtn.clicked.connect(self.setupKirschEdgeDetectionTool)
     
     def constructFrameToolWidget(self,objectname):
@@ -289,6 +291,13 @@ class MainWindow(QMainWindow):
         self.setPicture(self.imageCopy)
         return
     
+    def cannyHandler(self):
+        self.imageCopy = np.copy(self.image)
+        
+        self.imageCopy = self.picProcessingApp.canny()
+        self.setPicture(self.imageCopy)
+        return
+    
     def laplacianHandler(self):
         self.imageCopy = np.copy(self.image)
         
@@ -303,6 +312,10 @@ class MainWindow(QMainWindow):
         return
     
     def prewittHandler(self):
+        self.imageCopy = np.copy(self.image)
+        
+        self.imageCopy = self.picProcessingApp.prewitt()
+        self.setPicture(self.imageCopy)
         return
     
     def siftHandler(self):
@@ -568,7 +581,22 @@ class MainWindow(QMainWindow):
         return
     
     def setupPrewittEdgeDetectionTool(self):
-        return 
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        
+        self.prewittHandler()
+        
+        self.upadetCurrentFilterName(self.ui.PrewittBtn.text())
+        return
+    
+    def setupCannyEdgeDetectionTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        
+        self.cannyHandler()
+        
+        self.upadetCurrentFilterName(self.ui.CannyBtn.text())
+        return
     
     def setupSiftPOIDetectionTool(self):
         return

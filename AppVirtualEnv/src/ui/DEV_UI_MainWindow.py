@@ -374,6 +374,24 @@ class Ui_MainWindow(object):
 "}")
 
         self.verticalLayout.addWidget(self.SobelBtn)
+        
+        self.PrewittBtn = QPushButton(self.scrollAreaWidgetContents)
+        self.PrewittBtn.setObjectName(u"ِPrewittBtn")
+        self.PrewittBtn.setStyleSheet(u"QPushButton:hover{\n"
+"color:rgb(76, 255, 0);\n"
+"background-color:rgba(49, 255, 3, 40)\n"
+"}")
+
+        self.verticalLayout.addWidget(self.PrewittBtn)
+        
+        self.CannyBtn = QPushButton(self.scrollAreaWidgetContents)
+        self.CannyBtn.setObjectName(u"ِCannyBtn")
+        self.CannyBtn.setStyleSheet(u"QPushButton:hover{\n"
+"color:rgb(76, 255, 0);\n"
+"background-color:rgba(49, 255, 3, 40)\n"
+"}")
+
+        self.verticalLayout.addWidget(self.CannyBtn)
 
         self.KirschBtn = QPushButton(self.scrollAreaWidgetContents)
         self.KirschBtn.setObjectName(u"KirschBtn")
@@ -922,6 +940,8 @@ class Ui_MainWindow(object):
         self.labelColour_6.setText(QCoreApplication.translate("MainWindow", u"Edge Extraction", None))
         self.GradiantBtn.setText(QCoreApplication.translate("MainWindow", u"Gradiant", None))
         self.SobelBtn.setText(QCoreApplication.translate("MainWindow", u"Sobel", None))
+        self.PrewittBtn.setText(QCoreApplication.translate("MainWindow", u"Prewitt", None))
+        self.CannyBtn.setText(QCoreApplication.translate("MainWindow", u"Canny", None))
         self.KirschBtn.setText(QCoreApplication.translate("MainWindow", u"Kirsch", None))
         self.RobinsonBtn.setText(QCoreApplication.translate("MainWindow", u"Robinson", None))
         self.LaplacianBtn.setText(QCoreApplication.translate("MainWindow", u"Laplacian", None))

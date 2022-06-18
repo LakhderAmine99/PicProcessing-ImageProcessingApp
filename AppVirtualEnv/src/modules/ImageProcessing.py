@@ -307,23 +307,41 @@ class ImageProcessing:
         else:
             original_image = self._image
             
-        final_image = np.copy(original_image)
+        final_image = np.copy(original_image)    
+        sobel_x = cv2.Sobel(final_image,cv2.CV_8U,1,0,ksize=3)
+        sobel_y = cv2.Sobel(final_image,cv2.CV_8U,0,1,ksize=3)
 
-        return cv2.Sobel(final_image,cv2.CV_64F,1,0,ksize=3)
+        return sobel_x + sobel_y
     
     def laplacian(self):            
         final_image = np.copy(self._image)
 
-        return cv2.Laplacian(final_image,cv2.CV_64F,ksize=3)
+        return cv2.Laplacian(final_image,cv2.CV_8U,ksize=3)
     
     def canny(self):
-        return 
+        if len(self._image.shape) == 3:
+            original_image = self.grayscale()
+        else:
+            original_image = self._image
+            
+        final_image = np.copy(original_image)
+
+        return cv2.Canny(final_image,100,200)
     
     def hough(self):
-        return 
+        if len(self._image.shape) == 3:
+            original_image = self.grayscale()
+        else:
+            original_image = self._image
+            
+        final_image = np.copy(original_image)
+
+        return cv2.Canny(final_image,100,200)
     
     def sift(self):
-        return
+        final_image = np.copy(self._image)
+
+        return cv2.sift
     
     def harris(self):
         return
@@ -368,42 +386,22 @@ class ImageProcessing:
     
     def prewitt(self):
         
-        prewitt_kernel = [[0,c,1],[-1,0]]
-        
         if len(self._image.shape) == 3:
-            original_image = np.pad(self.grayscale(),((1,1),((1,1))),'symmetric')
+            original_image = self.grayscale()
         else:
-            original_image = np.pad(self._image,((1,1),((1,1))),'symmetric')
+            original_image = self._image
             
         final_image = np.copy(original_image)
-        
-        for i in range(1,original_image.shape[0] - 1):
-            for j in range(1,2,original_image.shape[1] - 1):
-                final_image[i,j] = np.sum(prewitt_kernel[0][0]*original_image[i,j],
-                                          prewitt_kernel[0][1]*original_image[i,j],
-                                          prewitt_kernel[0][2]*original_image[i,j],
-                                          
-                                          prewitt_kernel[1][0]*original_image[i,j],
-                                          prewitt_kernel[1][1]*original_image[i,j],
-                                          prewitt_kernel[1][2]*original_image[i,j],
-                                          
-                                          prewitt_kernel[2][0]*original_image[i,j],
-                                          prewitt_kernel[2][1]*original_image[i,j],
-                                          prewitt_kernel[2][2]*original_image[i,j])
-                
-                
-        final_image = final_image[1:original_image.shape[0] - 1,1:original_image.shape[1] - 1]
-        
-        self._image = np.copy(final_image)
-        final_image = self.otsu()
-                        
-        return final_image
+
+        return cv2.Prewitt(final_image,cv2.CV_8U,1,0,ksize=3)
         
     def kirsch(self):
         return 
     
     def regionGrowing(self):
-        return
+        final_image = np.copy(self._image)
+        
+        return cv2.region
     
     def regionSpliting(self):
         return

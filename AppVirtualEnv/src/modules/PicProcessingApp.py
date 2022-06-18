@@ -57,7 +57,7 @@ class PicProcessingApp(object):
         return self.imageProcessing.laplacian()
     
     def canny(self):
-        return 
+        return self.imageProcessing.canny()
     
     def hough(self):
         return self.imageProcessing.hough()
