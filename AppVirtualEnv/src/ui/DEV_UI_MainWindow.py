@@ -505,7 +505,7 @@ class Ui_MainWindow(object):
         self.AdjustMenu.setGeometry(QRect(220, 220, 61, 281))
         self.AdjustMenu.setStyleSheet(u"border:none;\n"
 "border-radius:12px;\n"
-"background-color: rgba(0, 0, 0, 0.7);")
+"background-color: rgba(0, 0, 0, 0.78);")
         self.AdjustMenu.setFrameShape(QFrame.StyledPanel)
         self.AdjustMenu.setFrameShadow(QFrame.Raised)
         self.verticalLayout_2 = QVBoxLayout(self.AdjustMenu)
@@ -658,7 +658,7 @@ class Ui_MainWindow(object):
         self.AdjustTopMenu.setGeometry(QRect(370, 20, 561, 61))
         self.AdjustTopMenu.setStyleSheet(u"border:none;\n"
 "border-radius:12px;\n"
-"background-color: rgba(0, 0, 0, 0.7);")
+"background-color: rgba(0, 0, 0, 0.78);")
         self.AdjustTopMenu.setFrameShape(QFrame.StyledPanel)
         self.AdjustTopMenu.setFrameShadow(QFrame.Raised)
         self.horizontalLayout = QHBoxLayout(self.AdjustTopMenu)
@@ -675,7 +675,8 @@ class Ui_MainWindow(object):
 "\n"
 "\n"
 "QPushButton:hover{\n"
-"	background-color: rgb(0, 0, 0);\n"
+"	color: rgb(255, 255, 255);\n"
+"	background-color: rgb(0, 130, 220);\n"
 "}")
         icon7 = QIcon()
         icon7.addFile(u"D:/designs-web/b2.png", QSize(), QIcon.Normal, QIcon.Off)
@@ -697,7 +698,8 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"	background-color: rgb(0, 0, 0);\n"
+"	color: rgb(255, 255, 255);\n"
+"	background-color: rgb(0, 130, 220);\n"
 "}")
         icon8 = QIcon()
         icon8.addFile(u"D:/designs-web/ce18e535675c436e1bc2ed4663ebbdea.png", QSize(), QIcon.Normal, QIcon.Off)
@@ -719,7 +721,8 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"	background-color: rgb(0, 0, 0);\n"
+"	color: rgb(255, 255, 255);\n"
+"	background-color: rgb(0, 130, 220);\n"
 "}")
         icon9 = QIcon()
         icon9.addFile(u"D:/designs-web/36.png", QSize(), QIcon.Normal, QIcon.Off)
@@ -741,7 +744,8 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"	background-color: rgb(0, 0, 0);\n"
+"	color: rgb(255, 255, 255);\n"
+"	background-color: rgb(0, 130, 220);\n"
 "}")
         icon10 = QIcon()
         icon10.addFile(u"D:/Programmation/DEV WEB/web dev mine/learn html css js only/images/icons desktop/icons8-xcode-96.png", QSize(), QIcon.Normal, QIcon.Off)

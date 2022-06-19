@@ -11,8 +11,25 @@ class PicProcessingApp(object):
         self.image = image
         self.imageProcessing.setImage(image)
     
-    def rotate(self):
-        return self.imageProcessing.rotate()
+    def rotate(self,angle=45):
+        image = self.imageProcessing.rotate(angle)
+        self.imageProcessing.setImage(image)
+        return image
+    
+    def flip(self):
+        image = self.imageProcessing.flip()
+        self.imageProcessing.setImage(image)
+        return image
+    
+    def zoomIn(self):
+        image = self.imageProcessing.zoomIn()
+        self.imageProcessing.setImage(image)
+        return image
+    
+    def zoomOut(self):
+        image = self.imageProcessing.zoomOut()
+        self.imageProcessing.setImage(image)
+        return image
     
     def grayscale(self):
         return self.imageProcessing.grayscale()
@@ -20,8 +37,35 @@ class PicProcessingApp(object):
     def invert(self,value=0):
         return self.imageProcessing.invert(value)
     
+    def contrast(self,value=0):
+        return self.imageProcessing.contrast(value)
+    
+    def warmth(self,value=0):
+        return self.imageProcessing.warmth(value)
+    
+    def hightlights(self,value):
+        return self.imageProcessing.highlights(value)
+    
+    def saturation(self,value=0):
+        return self.imageProcessing.saturation(value)
+    
+    def shadows(self,value=0):
+        return self.imageProcessing.shadows(value)
+    
+    def tint(self,value=0):
+        return self.imageProcessing.tint(value)
+    
+    def sharpen(self,value=0):
+        return self.imageProcessing.sharpen(value)
+    
     def histogram(self):
-        return
+        return self.imageProcessing.histogram()
+    
+    def equalize(self):
+        return self.imageProcessing.equalization()
+    
+    def stretch(self):
+        return self.imageProcessing.stretching()
     
     def manualThresholding(self,threshold=127):
         return self.imageProcessing.threshold(threshold)
@@ -79,6 +123,12 @@ class PicProcessingApp(object):
         
     def kirsch(self):
         return self.imageProcessing.kirsch()
+    
+    def watershed(self):
+        return self.imageProcessing.watershed()
+    
+    def KMeansSegmentation(self):
+        return self.imageProcessing.KMeansSegmentation()
     
     def undo(self):
         self.settings.undoLastImageAction()

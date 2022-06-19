@@ -6,6 +6,7 @@ from cv2 import threshold
 from cv2 import COLOR_RGB2GRAY
 from cv2 import sqrt
 import numpy as np
+import matplotlib.pyplot as plt
 
 from src.modules.PicProcessingApp import PicProcessingApp
 from PySide6.QtCore import (Qt, QRect)
@@ -13,7 +14,7 @@ from PySide6.QtGui import (QImage, QPixmap)
 from PySide6.QtWidgets import (QApplication, QFrame, QLabel,
                                QMainWindow, QVBoxLayout, QFileDialog, 
                                QSlider, QHBoxLayout)
-# from src.ui.UI_MainWindow import Ui_MainWindow
+
 from src.ui.DEV_UI_MainWindow import Ui_MainWindow
 
 class MainWindow(QMainWindow):
@@ -77,12 +78,23 @@ class MainWindow(QMainWindow):
         self.ui.SwitchViewBtn.clicked.connect(self.setupSwitchViewTool)
         
         self.ui.OpenImageBtn.clicked.connect(self.loadImageFile)
+        self.ui.SaveImageBtn.clicked.connect(self.saveImageFile)
         self.ui.ResetBtn.clicked.connect(self.resetChanges)
         self.ui.NoEffectsBtn.clicked.connect(self.noEffects)
         
         self.ui.BrightnessBtn.clicked.connect(self.setupBrightnessTool)
         self.ui.InvertBtn.clicked.connect(self.setupInvertTool)
         self.ui.GrayScaleBtn.clicked.connect(self.setupGrayScaleTool)
+        self.ui.ContrastBtn.clicked.connect(self.setupContrastTool)
+        self.ui.HighlightsBtn.clicked.connect(self.setupHighlightsTool)
+        self.ui.ShadowsBtn.clicked.connect(self.setupShadowsTool)
+        self.ui.WarmthBtn.clicked.connect(self.setupWarmthTool)
+        self.ui.SaturationBtn.clicked.connect(self.setupSaturationTool)
+        self.ui.TintBtn.clicked.connect(self.setupTintTool)
+        
+        self.ui.HistBtn.clicked.connect(self.setupHistogramTool)
+        self.ui.HistEqualizerBtn.clicked.connect(self.setupHistogramEqualizerTool)
+        self.ui.HistStretchBtn.clicked.connect(self.setupHistogramStretchTool)
         
         self.ui.ManualTresholdingBtn.clicked.connect(self.setupThresholdTool)
         self.ui.OtsuTresholdingBtn.clicked.connect(self.setupOtsuTool)
@@ -166,6 +178,15 @@ class MainWindow(QMainWindow):
             self.noEffects()
             self.setPicture(self.image,pixmap=self.pixmapcopy)
         
+    def saveImageFile(self):
+        fileName = QFileDialog.getSaveFileName(self,"Save File","C:\\Users\\amine\\OneDrive\\Desktop\\Programming\\Python\\workspace\\computer vision\\ComputerVisionApp\\AppVirtualEnv\\src\\assets","All Files (*)")
+        
+        image = self.ui.Image_copy.pixmap().toImage()
+        image = image.convertToFormat(QImage.Format_RGB888)
+        image = np.array(image.bits()).reshape(image.height(),image.width(),3)
+        
+        cv2.imwrite(fileName[0], image)
+
     def resetChanges(self):
         self.image = np.copy(self.persistingImage)
         self.picProcessingApp.setImage(self.image)
@@ -174,6 +195,7 @@ class MainWindow(QMainWindow):
     
     def noEffects(self):
         self.clearAdjustToolFrame()
+        self.upadetCurrentFilterName("No Filters")
         
     def upadetCurrentFilterName(self,text):
         self.ui.FiltersBtn.setText(text)
@@ -182,17 +204,45 @@ class MainWindow(QMainWindow):
     ## processing callers
     
     def rotateHandler(self):
-        self.imageCopy = np.copy(self.image)
-        self.imageCopy = self.picProcessingApp.rotate()
-        self.setPicture(self.imageCopy)
+                
+        self.image = self.picProcessingApp.rotate()
+        self.setPicture(self.image)
     
     def flipHandler(self):
-        return
+        self.image = self.picProcessingApp.flip()
+        self.setPicture(self.image)
     
     def zoomInHandler(self):
-        return
+        self.image = self.picProcessingApp.zoomIn()
+        self.setPicture(self.image)
     
     def zoomOutHandler(self):
+        self.image = self.picProcessingApp.zoomOut()
+        self.setPicture(self.image)
+       
+    def histogramHandler(self):
+                
+        histogram = self.picProcessingApp.histogram()
+        plt.bar(histogram[0],histogram[1],align='center')
+        plt.show()
+        
+        return
+            
+    def histogramEqualizerHandler(self):
+        
+        self.imageCopy = np.copy(self.image)
+
+        self.imageCopy = self.picProcessingApp.equalize()
+        self.setPicture(self.imageCopy)
+        
+        return
+    
+    def histogramStretchHandler(self):
+        self.imageCopy = np.copy(self.image)
+
+        self.imageCopy = self.picProcessingApp.stretch()
+        self.setPicture(self.imageCopy)
+        
         return
         
     def brightnessHandler(self,value):
@@ -207,10 +257,39 @@ class MainWindow(QMainWindow):
         self.setPicture(self.imageCopy)
    
     def contrastHandler(self,value):
-        return
+        self.imageCopy = np.copy(self.image)
+        self.imageCopy = self.picProcessingApp.contrast(value)                            
+        self.setPicture(self.imageCopy)
     
     def warmthHandler(self,value):
-        return
+        self.imageCopy = np.copy(self.image)
+        self.imageCopy = self.picProcessingApp.warmth(value)                         
+        self.setPicture(self.imageCopy)
+    
+    def saturationHandler(self,value):
+        self.imageCopy = np.copy(self.image)
+        self.imageCopy = self.picProcessingApp.saturation(value)                         
+        self.setPicture(self.imageCopy)
+    
+    def highlightsHandler(self,value):
+        self.imageCopy = np.copy(self.image)
+        self.imageCopy = self.picProcessingApp.hightlights(value)                         
+        self.setPicture(self.imageCopy) 
+    
+    def tintHandler(self,value):
+        self.imageCopy = np.copy(self.image)
+        self.imageCopy = self.picProcessingApp.tint(value)                         
+        self.setPicture(self.imageCopy)
+    
+    def shadowsHandler(self,value):
+        self.imageCopy = np.copy(self.image)
+        self.imageCopy = self.picProcessingApp.shadows(value)                         
+        self.setPicture(self.imageCopy)
+    
+    def sharpenHandler(self,value):
+        self.imageCopy = np.copy(self.image)
+        self.imageCopy = self.picProcessingApp.sharpen(value)                         
+        self.setPicture(self.imageCopy)
     
     def invertHandler(self,value=0):
         self.imageCopy = np.copy(self.image)
@@ -333,6 +412,10 @@ class MainWindow(QMainWindow):
         return
     
     def robertsHandler(self):
+        self.imageCopy = np.copy(self.image)
+        
+        self.imageCopy = self.picProcessingApp.roberts()
+        self.setPicture(self.imageCopy)
         return
     
     def prewittHandler(self):
@@ -355,6 +438,10 @@ class MainWindow(QMainWindow):
         return 
     
     def watershedHandler(self):
+        self.imageCopy = np.copy(self.image)
+        
+        self.imageCopy = self.picProcessingApp.watershed()
+        self.setPicture(self.imageCopy)
         return
     
     def regionGrowingHandler(self):
@@ -364,6 +451,10 @@ class MainWindow(QMainWindow):
         return
     
     def kmeansHandler(self):
+        self.imageCopy = np.copy(self.image)
+        
+        self.imageCopy = self.picProcessingApp.KMeansSegmentation()
+        self.setPicture(self.imageCopy)
         return
     
     ## setup tools
@@ -452,12 +543,27 @@ class MainWindow(QMainWindow):
         return
     
     def setupZoomInTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+            
+        self.zoomInHandler()
+        
         return
     
     def setupZoomOutTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+            
+        self.zoomOutHandler()
+        
         return
     
     def setupFlipTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+            
+        self.flipHandler()
+        
         return
     
     def setupCropTool(self):
@@ -473,6 +579,90 @@ class MainWindow(QMainWindow):
         self.brightnessSlider.valueChanged['int'].connect(self.brightnessHandler)
         
         self.upadetCurrentFilterName(self.ui.BrightnessBtn.text())
+        return
+    
+    def setupContrastTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.ContrastSlider = self.constructSliderToolWidget("ContrastTool","Contrast")
+        self.ContrastSlider.setMinimum(0)
+        self.ContrastSlider.setMaximum(255)
+        self.ContrastSlider.setValue(0)
+        self.ContrastSlider.valueChanged['int'].connect(self.contrastHandler)
+        
+        self.upadetCurrentFilterName(self.ui.ContrastBtn.text())
+        return
+            
+    def setupHighlightsTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.HighlightsSlider = self.constructSliderToolWidget("HighlightsTool","Highlights")
+        self.HighlightsSlider.setMinimum(0)
+        self.HighlightsSlider.setMaximum(255)
+        self.HighlightsSlider.setValue(0)
+        self.HighlightsSlider.valueChanged['int'].connect(self.highlightsHandler)
+        
+        self.upadetCurrentFilterName(self.ui.HighlightsBtn.text())
+        return
+    
+    def setupShadowsTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.ShadowsSlider = self.constructSliderToolWidget("ShadowsTool","Shadows")
+        self.ShadowsSlider.setMinimum(0)
+        self.ShadowsSlider.setMaximum(255)
+        self.ShadowsSlider.setValue(0)
+        self.ShadowsSlider.valueChanged['int'].connect(self.shadowsHandler)
+        
+        self.upadetCurrentFilterName(self.ui.ShadowsBtn.text())
+        return  
+        
+    def setupWarmthTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.WarmthSlider = self.constructSliderToolWidget("WarmthTool","Warmth")
+        self.WarmthSlider.setMinimum(0)
+        self.WarmthSlider.setMaximum(255)
+        self.WarmthSlider.setValue(0)
+        self.WarmthSlider.valueChanged['int'].connect(self.warmthHandler)
+        
+        self.upadetCurrentFilterName(self.ui.WarmthBtn.text())
+        return
+    
+    def setupSaturationTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.SaturationSlider = self.constructSliderToolWidget("SaturationTool","Saturation")
+        self.SaturationSlider.setMinimum(0)
+        self.SaturationSlider.setMaximum(255)
+        self.SaturationSlider.setValue(0)
+        self.SaturationSlider.valueChanged['int'].connect(self.saturationHandler)
+        
+        self.upadetCurrentFilterName(self.ui.HighlightsBtn.text())
+        return
+    
+    def setupTintTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.TintSlider = self.constructSliderToolWidget("TintTool","Tint")
+        self.TintSlider.setMinimum(0)
+        self.TintSlider.setMaximum(255)
+        self.TintSlider.setValue(0)
+        self.TintSlider.valueChanged['int'].connect(self.tintHandler)
+        
+        self.upadetCurrentFilterName(self.ui.TintBtn.text())
+        return
+    
+    def setupSharpenTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.SharpenSlider = self.constructSliderToolWidget("SharpenTool","Sharpen")
+        self.SharpenSlider.setMinimum(0)
+        self.SharpenSlider.setMaximum(255)
+        self.SharpenSlider.setValue(0)
+        self.SharpenSlider.valueChanged['int'].connect(self.sharpenHandler)
+        
+        self.upadetCurrentFilterName(self.ui.SharpenBtn.text())
         return
     
     def setupThresholdTool(self):
@@ -503,6 +693,30 @@ class MainWindow(QMainWindow):
         self.upadetCurrentFilterName(self.ui.InvertBtn.text())
         return
         
+    def setupHistogramTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.histogramHandler()
+        
+        self.upadetCurrentFilterName(self.ui.HistBtn.text())
+        return
+    
+    def setupHistogramEqualizerTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.histogramEqualizerHandler()
+        
+        self.upadetCurrentFilterName(self.ui.HistEqualizerBtn.text())
+        return
+    
+    def setupHistogramStretchTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        self.histogramStretchHandler()
+        
+        self.upadetCurrentFilterName(self.ui.HistStretchBtn.text())
+        return
+    
     def setupGrayScaleTool(self):
         if self.ui.AdjustToolFrameLayout.children:
             self.clearAdjustToolFrame()
@@ -634,6 +848,12 @@ class MainWindow(QMainWindow):
         return
     
     def setupRobertsEdgeDetectionTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        
+        self.robertsHandler()
+        
+        self.upadetCurrentFilterName(self.ui.RobertsBtn.text())
         return
     
     def setupPrewittEdgeDetectionTool(self):
@@ -667,12 +887,24 @@ class MainWindow(QMainWindow):
         return
     
     def setupWatershedSegmentationTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        
+        self.watershedHandler()
+        
+        self.upadetCurrentFilterName(self.ui.KMeansBtn.text())
         return
     
     def setupRegionPartitioningSegmentationTool(self):
         return
     
     def setupKMeansSegmentationTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        
+        self.kmeansHandler()
+        
+        self.upadetCurrentFilterName(self.ui.KMeansBtn.text())
         return
     
 if __name__ == "__main__":

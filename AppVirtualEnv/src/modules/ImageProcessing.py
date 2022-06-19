@@ -4,6 +4,7 @@ from random import randint, random
 import cv2
 from cv2 import COLOR_RGB2GRAY
 from cv2 import threshold
+from matplotlib import markers
 import numpy as np
 
 class ImageProcessing:
@@ -13,8 +14,23 @@ class ImageProcessing:
     def setImage(self,image):
         self._image = image
     
-    def rotate(self):
+    def rotate(self,angle):
         return cv2.rotate(self._image,cv2.ROTATE_90_CLOCKWISE)
+    
+    def flip(self):
+        final_image = np.copy(self._image)
+        final_image = cv2.flip(final_image,1)
+        return final_image
+    
+    def zoomIn(self,factor=0.5):
+        final_image = np.copy(self._image)
+        final_image = cv2.resize(final_image,(0,0),fx=factor,fy=factor)
+        return final_image
+    
+    def zoomOut(self,factor=0.5):
+        final_image = np.copy(self._image)
+        final_image = cv2.resize(final_image,(0,0),fx=1/factor,fy=1/factor)
+        return final_image
     
     def brightness(self,value):
         self._image = self._image + value
@@ -25,25 +41,38 @@ class ImageProcessing:
         final_image = final_image * value
         return final_image
     
-    def highlight(self):
-        return self._image + 255 - self._image * 0.5
+    def highlights(self,value):
+        final_image = np.copy(self._image)
+        final_image[:,:,1] = final_image[:,:,1] + value
+        final_image[:,:,2] = final_image[:,:,2] + value
+        return final_image
     
     def warmth(self,value):
         final_image = np.copy(self._image)
+        final_image[:,:,0] = final_image[:,:,0] + value/2
+        final_image[:,:,1] = final_image[:,:,1] - value/6
+        final_image[:,:,2] = final_image[:,:,2] - value/2
+        
+        return final_image
+    
+    def sharpen(self,value):
+        final_image = np.copy(self._image)
+        final_image = cv2.GaussianBlur(final_image,(3,3),0)
         final_image = final_image + value
         return final_image
     
-    def sharpen(self):
-        return
-    
-    def shadows(self):
-        return
-    
-    def tint(self,color):
+    def shadows(self,value):
         final_image = np.copy(self._image)
-        final_image[:,:,0] = final_image[:,:,0] + color[0]
-        final_image[:,:,1] = final_image[:,:,1] + color[1]
-        final_image[:,:,2] = final_image[:,:,2] + color[2]
+        final_image[:,:,0] = final_image[:,:,0] + value
+        final_image[:,:,1] = final_image[:,:,1] + value
+        final_image[:,:,2] = final_image[:,:,2] + value
+        return final_image
+    
+    def tint(self,value):
+        final_image = np.copy(self._image)
+        final_image[:,:,0] = final_image[:,:,0] + value
+        final_image[:,:,1] = final_image[:,:,1] + value
+        final_image[:,:,2] = final_image[:,:,2] + value
         return final_image
     
     def saturation(self,value):
@@ -58,7 +87,7 @@ class ImageProcessing:
         return self._image
     
     def histogram(self):
-        hist = cv2.calcHist([self._image],[0],None,[256],[0,256])
+        hist = cv2.calcHist([self._image],[2],None,[256],[0,256])
         return hist
 
     def equalization(self):
@@ -128,7 +157,6 @@ class ImageProcessing:
         return cv2.cvtColor(final_image,COLOR_RGB2GRAY)
     
     def threshold(self,threshold):        
-        # return cv2.threshold(self._image,threshold,255,cv2.THRESH_BINARY)[1]
         final_image = np.copy(self._image)
         final_image[:,:] = (final_image[:,:] > threshold)*255
                 
@@ -250,10 +278,6 @@ class ImageProcessing:
         for i in range(1,2,original_image.shape[0] - 1):
             for j in range(1,original_image.shape[1] - 1):
                 final_image_y[i,j] = np.sum(gradient_kernel[0]*original_image[i,j] + gradient_kernel[1]*original_image[i,j+1])
-        
-        # for i in range(1,original_image.shape[0] - 1):
-        #     for j in range(1,original_image.shape[1] - 1):
-        #         final_image[i,j] = math.atan(final_image_y[i,j]/(final_image_x[i,j]+1))
                 
         for i in range(1,original_image.shape[0] - 1):
             for j in range(1,original_image.shape[1] - 1):
@@ -398,14 +422,26 @@ class ImageProcessing:
     
     def prewitt(self):
         
+        scale = 1
+        delta = 0
+        ddepth = cv2.CV_16S
+        
         if len(self._image.shape) == 3:
             original_image = self.grayscale()
         else:
             original_image = self._image
             
-        final_image = np.copy(original_image)
+        final_image = np.copy(original_image)    
 
-        return cv2.Prewitt(final_image,cv2.CV_8U,1,0,ksize=3)
+        grad_x = cv2.Sobel(final_image, ddepth, 1, 0, ksize=3, scale=scale, delta=delta, borderType=cv2.BORDER_DEFAULT)
+        grad_y = cv2.Sobel(final_image, ddepth, 0, 1, ksize=3, scale=scale, delta=delta, borderType=cv2.BORDER_DEFAULT)
+        
+        abs_grad_x = cv2.convertScaleAbs(grad_x)
+        abs_grad_y = cv2.convertScaleAbs(grad_y)
+        
+        grad = cv2.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0)
+        
+        return grad
         
     def kirsch(self):
         return 
@@ -421,5 +457,27 @@ class ImageProcessing:
     def splitingAndMerging(self):
         return 
     
+    def watershed(self):
+        final_image = np.copy(self._image)
+         
+        markers = np.zeros(final_image.shape, dtype=np.int32)
+         
+        return cv2.watershed(final_image, markers)
+    
     def KMeansSegmentation(self):
-        return
+    
+        final_image = np.copy(self._image)
+        
+        Z = final_image.reshape((-1,3))
+
+        Z = np.float32(Z)
+
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+        K = 8
+        ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+        # Now convert back into uint8, and make original image
+        center = np.uint8(center)
+        res = center[label.flatten()]
+        res2 = res.reshape((final_image.shape))
+        
+        return res2
