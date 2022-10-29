@@ -1,4 +1,4 @@
-# ComputerVisionApp
+# PicProcessingApp
 
 ## Overview
 
