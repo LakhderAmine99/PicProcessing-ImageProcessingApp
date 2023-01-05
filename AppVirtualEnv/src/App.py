@@ -222,8 +222,20 @@ class MainWindow(QMainWindow):
        
     def histogramHandler(self):
                 
-        histogram = self.picProcessingApp.histogram()
-        plt.bar(histogram[0],histogram[1],align='center')
+        # histogram = self.picProcessingApp.histogram()
+        image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+
+        colors = ("red", "green", "blue")
+        channel_ids = (0, 1, 2)
+        plt.figure()
+        plt.xlim([0, 256])
+        for (channel_id, c) in zip(channel_ids, colors):
+            histogram  = [(image[:,:,channel_id]==v).sum() for v in range(256)]
+            plt.plot(histogram, color=c)
+
+        plt.xlabel("color value")
+        plt.ylabel("pixel count")
+
         plt.show()
         
         return
@@ -445,9 +457,17 @@ class MainWindow(QMainWindow):
         return
     
     def regionGrowingHandler(self):
+        self.imageCopy = np.copy(self.image)
+        
+        self.imageCopy = self.picProcessingApp.regionGrowing()
+        self.setPicture(self.imageCopy)
         return
     
-    def regionPartitioningHandler(self):
+    def regionSplittingHandler(self):
+        self.imageCopy = np.copy(self.image)
+        
+        self.imageCopy = self.picProcessingApp.regionSplitting()
+        self.setPicture(self.imageCopy)
         return
     
     def kmeansHandler(self):
@@ -884,6 +904,12 @@ class MainWindow(QMainWindow):
         return
     
     def setupRegionGrowingSegmentationTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        
+        self.regionGrowingHandler()
+        
+        self.upadetCurrentFilterName(self.ui.RegionGrowingBtn.text())
         return
     
     def setupWatershedSegmentationTool(self):
@@ -896,6 +922,12 @@ class MainWindow(QMainWindow):
         return
     
     def setupRegionPartitioningSegmentationTool(self):
+        if self.ui.AdjustToolFrameLayout.children:
+            self.clearAdjustToolFrame()
+        
+        self.regionSplittingHandler()
+        
+        self.upadetCurrentFilterName(self.ui.RegionPartitionBtn.text())
         return
     
     def setupKMeansSegmentationTool(self):

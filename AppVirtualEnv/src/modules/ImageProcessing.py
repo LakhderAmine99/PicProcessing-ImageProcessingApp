@@ -7,6 +7,11 @@ from cv2 import threshold
 from matplotlib import markers
 import numpy as np
 
+from skimage import segmentation, color
+from skimage.future import graph
+from skimage.morphology import flood
+from skimage.filters import prewitt
+
 class ImageProcessing:
     def __init__(self, image): 
         self._image = image
@@ -92,16 +97,46 @@ class ImageProcessing:
 
     def equalization(self):
         image = self._image
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        image = cv2.equalizeHist(image)
+        b = image[:,:,0]
+        g = image[:,:,1]
+        r = image[:,:,2]
+        image[:,:,0] = cv2.equalizeHist(b)
+        image[:,:,1] = cv2.equalizeHist(g)
+        image[:,:,2] = cv2.equalizeHist(r)
         return image
     
-    def stretching(self,histogram=None):
+    def stretching1(self,histogram=None):
         histogram = self.histogram() if histogram is None else histogram
         histogram = np.array(histogram)
         histogram = histogram / np.sum(histogram)
         histogram = histogram * 255
+        image = self._image
+        b = image[:,:,0]
+        g = image[:,:,1]
+        r = image[:,:,2]
+        image[:,:,0] = cv2.equalizeHist(b)
+        image[:,:,1] = cv2.equalizeHist(g)
+        image[:,:,2] = cv2.equalizeHist(r)
         return histogram
+    def stretching(self):
+        image = self._image.copy()
+        b = image[:,:,0]
+        g = image[:,:,1]
+        r1 = image[:,:,2]
+        rows,cols = b.shape
+        mx_b = np.max(b)
+        mn_b = np.min(b)
+        mx_g = np.max(g)
+        mn_g = np.min(g)
+        mx_r = np.max(r1)
+        mn_r = np.min(r1)
+        for r in range(rows):
+            for c in range(cols):
+                image[r,c,0] =  (255 / (mx_b - mn_b) * (b[r,c] - mn_b))
+                image[r,c,1] =  (255 / (mx_g - mn_g) * (g[r,c] - mn_g))
+                image[r,c,2] =  (255 / (mx_r - mn_r) * (r1[r,c] - mn_r)) 
+                  
+        return image
     
     def gaussian_blur(self,kernel_size=3,sigma=0.01):
         final_image = np.copy(self._image)
@@ -447,12 +482,59 @@ class ImageProcessing:
         return 
     
     def regionGrowing(self):
-        final_image = np.copy(self._image)
         
-        return cv2.region
+        tolerance =10
+        
+        img = self._image
+        
+        new_image = img.copy()
+        img_gray  = img.copy()
+        if len(img.shape) == 3 :
+            img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img_gray = cv2.medianBlur(img_gray,9)
+        seed = (0,0)
+        new_value = img[seed]
+        all_visited = False
+        visited = np.zeros(img_gray.shape)
+
+
+        while visited.min() == 0 :
+            mask = flood(img_gray,seed,tolerance=tolerance)
+            visited[mask] = 1
+            new_image[mask] = new_value
+            not_visited = np.where(visited == 0)
+            all_visited = len(not_visited[0]) == 0
+            if not all_visited :
+                seed = (not_visited[0][0],not_visited[1][0])
+                new_value = img[seed]
+        return new_image
     
-    def regionSpliting(self):
-        return
+    def regionSplitting(self):
+        import matplotlib.pyplot as plt
+        img = np.copy(self._image)
+        
+        def _weight_mean_color(graph, src, dst, n):
+            diff = graph.nodes[dst]['mean color'] - graph.nodes[n]['mean color']
+            diff = np.linalg.norm(diff)
+            return {'weight': diff}
+    
+        def merge_mean_color(graph, src, dst):
+            graph.nodes[dst]['total color'] += graph.nodes[src]['total color']
+            graph.nodes[dst]['pixel count'] += graph.nodes[src]['pixel count']
+            graph.nodes[dst]['mean color'] = (graph.nodes[dst]['total color'] /graph.nodes[dst]['pixel count'])
+
+        labels = segmentation.slic(img, compactness=30, n_segments=400, start_label=1)
+        g = graph.rag_mean_color(img, labels)
+
+        labels2 = graph.merge_hierarchical(labels, g, thresh=35, rag_copy=False,
+                                        in_place_merge=True,
+                                        merge_func=merge_mean_color,
+                                        weight_func=_weight_mean_color)
+
+        out = color.label2rgb(labels2, img, kind='avg', bg_label=0)
+        out = segmentation.mark_boundaries(out, labels2, (0, 0, 0)) 
+        
+        return np.uint8(out)
     
     def splitingAndMerging(self):
         return 

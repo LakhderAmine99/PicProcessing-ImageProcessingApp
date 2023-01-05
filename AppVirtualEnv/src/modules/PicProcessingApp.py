@@ -1,10 +1,8 @@
-from src.modules.PicProcessingSettings import PicProcessingSettings
 from src.modules.ImageProcessing import ImageProcessing
 
 class PicProcessingApp(object):
     def __init__(self,image):
         self.image = image
-        self.settings = PicProcessingSettings(self.image)
         self.imageProcessing = ImageProcessing(self.image)
         
     def setImage(self,image):
@@ -127,13 +125,11 @@ class PicProcessingApp(object):
     def watershed(self):
         return self.imageProcessing.watershed()
     
+    def regionGrowing(self):
+        return self.imageProcessing.regionGrowing()
+    
+    def regionSplitting(self):
+        return self.imageProcessing.regionSplitting()
+    
     def KMeansSegmentation(self):
         return self.imageProcessing.KMeansSegmentation()
-    
-    def undo(self):
-        self.settings.undoLastImageAction()
-        return
-    
-    def reset(self):
-        self.settings.resetImage()
-        return
